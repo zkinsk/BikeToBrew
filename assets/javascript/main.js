@@ -1,5 +1,7 @@
 // AIzaSyAkRgKvL87NTW0sZv9yDSOpQRPXaVV61h8  google API Key
 // 200235024-32c4fc71813961608e163497918dd634 mtb project API key
+var googleApiKey = "AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0";
+var mtbProjApiKey = "200235024-32c4fc71813961608e163497918dd634";
 
 var map;
 var markers = [];
@@ -30,7 +32,7 @@ function geoCall(dist) {
 
 // lat and lon based on zip code or other search parameters - provided by google api
 function coordinateCall(sParameter, dist) {
-  var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + sParameter + "&key=AIzaSyAkRgKvL87NTW0sZv9yDSOpQRPXaVV61h8";
+  var queryURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + sParameter + "&key=" + googleApiKey;
   $.ajax({
     url: queryURL,
     method: "GET"
@@ -48,7 +50,7 @@ function coordinateCall(sParameter, dist) {
 
 // calls mtb project for trails located within a defined radius
 function trailCall(dist, mapCtr) {
-  var queryURL = "https://www.mtbproject.com/data/get-trails?lat=" + mapCtr.lat + "&lon=" + mapCtr.lng + "&maxDistance=" + dist + "&key=200235024-32c4fc71813961608e163497918dd634";
+  var queryURL = "https://www.mtbproject.com/data/get-trails?lat=" + mapCtr.lat + "&lon=" + mapCtr.lng + "&maxDistance=" + dist + "&key=" + mtbProjApiKey;
   $.ajax({
     url: queryURL,
     method: "GET"
