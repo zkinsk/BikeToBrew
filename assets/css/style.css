@@ -33,7 +33,7 @@ button {
 
 #appContent {
     display: none;
-    margin-top: 60px;
+    margin-top: 20px;
     flex: 1 0 auto;
 }
 
@@ -174,9 +174,6 @@ input:-ms-input-placeholder {
 .carousel {
     max-height: 250px;
 }
-/* .carousel-item img {
-    max-height: auto;
-} */
 
 .stars-outer {
 display: inline-block;

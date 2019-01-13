@@ -1,5 +1,3 @@
-// AIzaSyAkRgKvL87NTW0sZv9yDSOpQRPXaVV61h8  google API Key
-// 200235024-32c4fc71813961608e163497918dd634 mtb project API key
 var googleApiKey = "AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0";
 var mtbProjApiKey = "200235024-32c4fc71813961608e163497918dd634";
 
@@ -80,6 +78,7 @@ function placesCall(dist, mapCtr) {
   function callback(results, status) {
     if (status == google.maps.places.PlacesServiceStatus.OK) {
       breweryObject = results;
+      console.log(breweryObject);
       makeArrays()
     } else {
       breweryObject = [{ name: "false" }];
@@ -695,7 +694,9 @@ function breweryDetails(breweryId) {
         scroll = setInterval(timer, 4000)
       }
       $('#modalBrewery').modal('open');
-      initCarouselModal();
+      setTimeout(function(){
+        initCarouselModal()
+      }, 100);
     }
   };
 }
@@ -703,12 +704,12 @@ function breweryDetails(breweryId) {
 // function to initialize the carousel - it needs to be initialized after the modal is opened becuase when the model is hidden its height is 0 and this causes problems with the carousel
 function initCarouselModal() {
   var elems = document.querySelectorAll('.carousel');
-  var instances = M.Carousel.init(elems, {
+  var breweryCarousel = M.Carousel.init(elems, {
     numVisible: 1,
     fullWidth: true,
     indicators: true,
   });
-  instances[0].set(2);
+  console.log(breweryCarousel);
 }
 
 // this is the function to automatically advance the carousel to the next image
@@ -736,7 +737,7 @@ function buttonClick() {
   $("#coordinateSubmit").click(function (event) {
     event.preventDefault();
     let x = $("#coordinateInput").val();
-    if (x == "") {
+    if (x == "" || x == "Current Location") {
       geoCall(distance());
     } else {
       coordinateCall(x, distance());
@@ -803,7 +804,8 @@ var distance = function(){
         $("#dist").val("1");
     }
     else if (d == ""){
-    d = 10;
+    d = 5;
+    $("#dist").val("5");
     };
     return d;
 }
