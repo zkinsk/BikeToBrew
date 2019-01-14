@@ -321,7 +321,7 @@ function markerMap(mapCtr) {
                   elementType: "labels",
                   stylers: [
                     {
-                      visibility: "off"
+                      // visibility: "off"
                     }
                   ]
                 },
@@ -330,7 +330,7 @@ function markerMap(mapCtr) {
                   elementType: "labels.icon",
                   stylers: [
                     {
-                      visibility: "off"
+                      // visibility: "off"
                     }
                   ]
                 },
@@ -351,7 +351,7 @@ function markerMap(mapCtr) {
                   elementType: "labels",
                   stylers: [
                     {
-                      visibility: "off"
+                      // visibility: "off"
                     }
                   ]
                 },
@@ -378,7 +378,7 @@ function markerMap(mapCtr) {
                   elementType: "labels",
                   stylers: [
                     {
-                      visibility: "off"
+                      // visibility: "off"
                     }
                   ]
                 },
@@ -419,9 +419,11 @@ function markerMap(mapCtr) {
                   elementType: "labels.text",
                   stylers: [
                     {
-                      visibility: "on",
-                      color: "#ffffff"
-                    }
+                      visibility: "on"
+                    },
+                    {
+                      color: "#000000"
+                    },
                   ]
                 },
                
@@ -430,7 +432,7 @@ function markerMap(mapCtr) {
                   elementType: "labels.text.fill",
                   stylers: [
                     {
-                      color: "white"
+                      color: "#ffffff"
                     }
                   ]
                 },
