@@ -98,7 +98,11 @@ function makeArrays() {
   // pull info from Mountain Bike Object
   if (mtbObject[0].name === "false"){
     $(".mtbList").empty();
-    $(".mtbList").text(`No Trails in your Search Area`);
+    let item = $("<li>");
+    let link = $("<a href='#!'></a>");
+    link.text('No Trails in your Search Area')
+    item.append(link);
+    $(".mtbList").append(item);
   }else{
     for (i = 0; i < mtbObject.length; i++) {
       var trailName = mtbObject[i].name;
@@ -124,7 +128,11 @@ function makeArrays() {
   // pull info from brewery object
   if (breweryObject[0].name === "false"){
     $(".breweryList").empty();
-    $(".breweryList").text(`No Breweries in your Search Area`);
+    let item = $("<li>");
+    let link = $("<a href='#!'></a>");
+    link.text('No Breweries in your Search Area')
+    item.append(link);
+    $(".breweryList").append(item);
   }else{
     for (var k = 0; k < breweryObject.length; k++) {
       var breweryName = breweryObject[k].name;
