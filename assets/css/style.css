@@ -55,6 +55,10 @@ button {
     padding-bottom: 10px !important;
     vertical-align: baseline;
 }
+#dist {
+    padding-bottom: 10px !important;
+    vertical-align: baseline;
+}
 
 #formRow {
     padding-right: 0px;
@@ -67,7 +71,7 @@ button {
 
 .radiusSearch {
     position: relative;
-    top: 10px;
+    /* top: 10px; */
     overflow-wrap: break-word;
     vertical-align: baseline;
 }
@@ -367,7 +371,7 @@ background: transparent;
     }  
 
     #dist {
-        font-size: 28px !important;
+        /* font-size: 28px !important; */
     }
 
 }
@@ -412,7 +416,7 @@ background: transparent;
     } 
 
     #dist {
-        font-size: 20px !important;
+        /* font-size: 20px !important; */
     }
 
     .footerP {

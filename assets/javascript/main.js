@@ -395,7 +395,7 @@ function markerMap(mapCtr) {
                   featureType: "road.local",
                   stylers: [
                     {
-                      color: "#fee3a7"
+                      color: "#ffffff"
                     },
                     {
                       lightness: -70
@@ -407,10 +407,21 @@ function markerMap(mapCtr) {
                 },
                 {
                   featureType: "road.local",
+                  elementType: "labels.text",
+                  stylers: [
+                    {
+                      visibility: "on",
+                      color: "#ffffff"
+                    }
+                  ]
+                },
+               
+                {
+                  featureType: "road.local",
                   elementType: "labels.text.fill",
                   stylers: [
                     {
-                      color: "#806b63"
+                      color: "white"
                     }
                   ]
                 },
