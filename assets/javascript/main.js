@@ -170,6 +170,7 @@ function markerMap(mapCtr) {
             streetViewControl: false,
             rotateControl: false,
             fullscreenControl: true,
+            gestureHandling: 'greedy',
             styles: [
                 {
                   elementType: "geometry",
