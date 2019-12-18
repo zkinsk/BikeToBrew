@@ -46,67 +46,69 @@
         <!-- end of modals -->
         
         <!-- main content -->
-        <!-- <div class="row"> -->
-            <div class="row" id="header">
-                <img class="col s2 m2 l2" id="contentLogo" src="assets/images/biketobrewlogo.png">
-                <form class="col s10 l10" id="formRow">
-                    <div class="input-field inline col s8 m8 l8">
+        <div class="row" id="header">
+            <div class="col s2">
+                <img id="contentLogo" src="assets/images/biketobrewlogo.png">
+            </div>
+            <div class="col s10">
+                <form id="formRow">
+                    <div class="input-field inline coordinate-input">
                         <input id="coordinateInput" type="search" class="active" placeholder="Current Location">
                         <label for="coordinateInput" title="Search any way you would like, City Name, Zip Code, Trail Name or Brewery Name">Search Area</label>
                         <i class="material-icons clearSearch icon-white">close</i>
                     </div>
-                    <div class="input-field inline col s2 m3 l3 radiusSearch">
+                    <div class="input-field inline radiusSearch">
                         <label for="dist" title="Search Radius in Miles">Radius</label>
                         <input type = "number" placeholder="5" id="dist" min="1" max="50">
                     </div>
-                    <div class="col s1 m1 l1">
+                    <div class="input-field inline">
                         <button class="waves-effect waves-light" type="submit" name="action" id="coordinateSubmit">
                             <img id="searchGlass" src="assets/images/searchicon_white.png">
                         </button>
                     </div>
                 </form>
             </div>
-            <div class='row hide-on-large-only'>
-                <div class='col s6 center-align'>
-                    <a class='dropdown-trigger btn' id="mtbDropdown" href='#' data-target='mtbList'>Trailheads Near You</a>
-                    <!-- Dropdown Structure -->
-                    <ul id='mtbList' class='dropdown-content mtbList'>
-                    </ul>
-                </div>
-                <div class='col s6 center-align'>
-                    <a class='dropdown-trigger btn' id="breweryDropdown" href='#' data-target='breweryList'>Breweries Near You</a>
-                    <!-- Dropdown Structure -->
-                    <ul id='breweryList' class='dropdown-content breweryList'>
-                    </ul>
-                </div>
+        </div>
+        <div class='row hide-on-large-only'>
+            <div class='col s6 center-align'>
+                <a class='dropdown-trigger btn' id="mtbDropdown" href='#' data-target='mtbList'>Trailheads Near You</a>
+                <!-- Dropdown Structure -->
+                <ul id='mtbList' class='dropdown-content mtbList'>
+                </ul>
             </div>
+            <div class='col s6 center-align'>
+                <a class='dropdown-trigger btn' id="breweryDropdown" href='#' data-target='breweryList'>Breweries Near You</a>
+                <!-- Dropdown Structure -->
+                <ul id='breweryList' class='dropdown-content breweryList'>
+                </ul>
+            </div>
+        </div>
         
-            <div class='row' id="searchContent">
-                <!-- collaspible columns that are hidden on sizes medium and smaller -->
-                <div class='col s12 m12 l8 center-align'>
-                    <div id="googleMapsMarkers">
-                        <div id="markerMap"></div>
-                    </div>
-                </div>
-                <div class = "col l4 hide-on-med-and-down " id="resultsHolder">
-                    <ul class="col" id="searchResults">
-                        <li>
-                            <div class="col l12 searchHeader" id="mtb-header">TRAILS</div>
-                            <div class="col l12 searchList" id="mtb-body">
-                                <ul class='mtbList'></ul>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="col l12 searchHeader" id="brewery-header">BREWERIES</div>
-                            <div class="col l12 searchList" id = "brewery-body">
-                                    <ul class='breweryList'></ul>
-                            </div>
-                        </li>
-                    </ul>
+        <div class='row' id="searchContent">
+            <!-- collaspible columns that are hidden on sizes medium and smaller -->
+            <div class='col s12 l8 center-align'>
+                <div id="googleMapsMarkers">
+                    <div id="markerMap"></div>
                 </div>
             </div>
-        <!-- </div> -->
+            <div class = "col l4 hide-on-med-and-down " id="resultsHolder">
+                <ul class="col" id="searchResults">
+                    <li>
+                        <div class="col l12 searchHeader" id="mtb-header">TRAILS</div>
+                        <div class="col l12 searchList" id="mtb-body">
+                            <ul class='mtbList'></ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="col l12 searchHeader" id="brewery-header">BREWERIES</div>
+                        <div class="col l12 searchList" id = "brewery-body">
+                                <ul class='breweryList'></ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
     <footer> 
         <p class="footerP">This app does not in anyway condone or support drunk cycling/impaired driving. Please drink responsibily. • &copy; 2019 ByteMe</p>
@@ -114,7 +116,6 @@
 </body>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkRgKvL87NTW0sZv9yDSOpQRPXaVV61h8&libraries=places"></script> -->
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0&libraries=places"></script>
 
 <script type="text/javascript" src="assets/javascript/mapObj.js"></script>
