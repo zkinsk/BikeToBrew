@@ -1,6 +1,6 @@
-#splashScreen   {
+#splashScreen {
     background-color: #e9a502;
-    height:100vh;
+    height: 100vh;
 }
 
 #splashScreen .col {
@@ -19,7 +19,7 @@ body {
 }
 
 button {
-    background-color: #e9a502 ;
+    background-color: #e9a502;
 }
 
 .btn {
@@ -28,7 +28,6 @@ button {
     font-weight: 300;
     font-size: 25px !important;
     margin-top: 3px;
-    
 }
 
 #appContent {
@@ -55,6 +54,7 @@ button {
     padding-bottom: 10px !important;
     vertical-align: baseline;
 }
+
 #dist {
     padding-bottom: 10px !important;
     vertical-align: baseline;
@@ -108,11 +108,11 @@ label.active {
     line-height: 20px;
 }
 
-.input-field:focus + .icon-white  {
+.input-field:focus+.icon-white {
     color: #ffffff !important;
 }
 
-.input-field input:focus + label {
+.input-field input:focus+label {
     color: #4a2c1a !important;
     font-size: 30px !important;
     margin-top: -15px !important;
@@ -131,18 +131,21 @@ label.active {
 input::-webkit-input-placeholder {
     color: #ffffff;
 }
+
 input::-moz-placeholder {
     color: #ffffff;
 }
+
 input:-moz-placeholder {
     color: #ffffff;
 }
+
 input:-ms-input-placeholder {
     color: #ffffff;
 }
 
 #coordinateSubmit {
-    background-color: transparent; 
+    background-color: transparent;
     background-image: none;
     background-repeat: no-repeat;
     border: none;
@@ -175,38 +178,39 @@ input:-ms-input-placeholder {
     margin: auto;
     max-width: 400px;
 }
+
 .carousel {
     max-height: 250px;
 }
 
 .stars-outer {
-display: inline-block;
-position: relative;
-font-family: FontAwesome;
+    display: inline-block;
+    position: relative;
+    font-family: FontAwesome;
 }
-   
+
 .stars-outer::before {
-content: "★★★★★";
+    content: "★★★★★";
 }
-   
+
 .stars-inner {
-position: absolute;
-top: 0;
-left: 0;
-white-space: nowrap;
-overflow: hidden;
-width: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
 }
-   
+
 .stars-inner::before {
-content: "★★★★★";
-color: #f8ce0b;
+    content: "★★★★★";
+    color: #f8ce0b;
 }
 
 .breakLine {
-margin: auto;
-width: 80%;
-border-top: solid darkgrey 1px;
+    margin: auto;
+    width: 80%;
+    border-top: solid darkgrey 1px;
 }
 
 #searchContent {
@@ -264,7 +268,6 @@ a {
 #mtb-header {
     padding: 3px;
     padding-left: 18px;
-
 }
 
 #brewery-header {
@@ -277,12 +280,12 @@ a {
     padding-left: 18px;
 }
 
-#brewery-body   {
+#brewery-body {
     padding: 6px;
     padding-left: 18px;
 }
 
-.searchList :hover{
+.searchList :hover {
     color: #25cef9;
 }
 
@@ -310,115 +313,103 @@ footer {
     display: none;
     background-color: transparent;
     padding: 0px 10px 10px 10px;
-  }
+}
 
 /* Scrollbar Properties */
+
 /* width */
+
 ::-webkit-scrollbar {
     width: 0px;
 }
 
 /* Track */
+
 ::-webkit-scrollbar-track {
-background: transparent; 
+    background: transparent;
 }
 
 /* Handle */
+
 ::-webkit-scrollbar-thumb {
-background: transparent; 
+    background: transparent;
 }
 
 /* Handle on hover */
+
 ::-webkit-scrollbar-thumb:hover {
-background: transparent; 
+    background: transparent;
 }
 
 @media only screen and (max-width: 992px) {
-
     #formRow {
         position: relative;
         top: 9%;
         bottom: 0px;
     }
-
     #searchContent {
         box-shadow: none;
     }
-
     #markerMap {
         box-shadow: 10px 10px 10px -6px rgb(75, 44, 26);
         border: none;
     }
-
     .listData {
         color: #a36301 !important;
         font-family: futura-pt-condensed, sans-serif;
         font-weight: 500;
         font-size: 25px !important;
     }
-
     .dropdown-trigger {
         width: 100%;
     }
-
     .input-field label {
         font-weight: 500;
         font-size: 28px !important;
     }
-    .input-field input:focus + label {
+    .input-field input:focus+label {
         font-size: 28px !important;
         margin-top: -30px !important;
-    }  
-
+    }
     #dist {
         /* font-size: 28px !important; */
     }
-
 }
 
 @media only screen and (max-width: 550px) {
-    .container{
+    .container {
         width: 100%;
     }
-
     .row {
-      margin-bottom: 5px;
+        margin-bottom: 5px;
     }
-
     .input-field {
         margin-bottom: 0;
     }
-
     .modal {
         width: 100%;
     }
-
     .btn {
         font-family: futura-pt-condensed, sans-serif;
         font-weight: 300;
         font-size: 18px !important;
     }
-
     #formRow {
         position: relative;
         top: 2%;
         bottom: 0px;
     }
-
     .input-field label {
         font-size: 20px !important;
         margin-top: -20px !important;
     }
-
-    .input-field input:focus + label {
+    .input-field input:focus+label {
         font-size: 20px !important;
         margin-top: -30px !important;
-    } 
-
+    }
     #dist {
         /* font-size: 20px !important; */
     }
-
     .footerP {
         font-size: 15px;
         line-height: 20px;
@@ -431,12 +422,10 @@ background: transparent;
     #splashScreen .col {
         margin-top: 120px;
     }
-    
     .input-field label {
         margin-top: -48px !important;
     }
-
-    .input-field input:focus + label {
+    .input-field input:focus+label {
         margin-top: -48px !important;
-    } 
+    }
 }
