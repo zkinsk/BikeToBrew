@@ -2,7 +2,7 @@ const googleApiKey = 'AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0';
 const mtbProjApiKey = '200235024-32c4fc71813961608e163497918dd634';
 
 import { mapStyles } from './mapObj.js';
-import hpr from './helper.js'
+import hpr from './helper.js';
 
 let map;
 let markers = [];
@@ -160,11 +160,7 @@ function makeArrays(mtbObject, breweryObject) {
 		}
 	}
 	// combine the two arrays for sending to marker map
-<<<<<<< HEAD
 	const mapInfoArr = mtbInfoArr.push(...breweryInfoArr);
-=======
-	const mapInfoArr = mtbInfoArr.concat(breweryInfoArr);
->>>>>>> refactor
 	addMarkers(mapInfoArr);
 }
 
@@ -341,8 +337,6 @@ function trailDetails(trailId) {
 
 // function to call back google for specific details on a brewery using the place ID
 
-
-
 function breweryDetails(breweryId) {
 	const request = {
 		placeId: breweryId,
@@ -473,17 +467,16 @@ function buttonClick() {
 		panZoom(lat, lon);
 		infoWindowPopup(marker);
 	});
-	
-	$(document).on('click', '.popUpDetails', function () {
-		const itemInfo = $(this).data('marker');
-		itemInfo.type === "trail" ? trailDetails(itemInfo.id) : breweryDetails(itemInfo.id)
-	});
 
+	$(document).on('click', '.popUpDetails', function() {
+		const itemInfo = $(this).data('marker');
+		itemInfo.type === 'trail' ? trailDetails(itemInfo.id) : breweryDetails(itemInfo.id);
+	});
 }
 
 // add info to the map marker info window
 function infoWindowPopup(marker) {
-	const markerData = marker.type === 'trail' ? { "type": 'trail' } : { "type": 'brewery' };
+	const markerData = marker.type === 'trail' ? { type: 'trail' } : { type: 'brewery' };
 	markerData.id = marker.id;
 	infowindow.setContent(
 		/*html*/
