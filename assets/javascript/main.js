@@ -2,10 +2,7 @@ const googleApiKey = 'AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0';
 const mtbProjApiKey = '200235024-32c4fc71813961608e163497918dd634';
 
 import { mapStyles } from './mapObj.js';
-<<<<<<< HEAD
-=======
 import hpr from './helper.js'
->>>>>>> refactor
 
 let map;
 let markers = [];
