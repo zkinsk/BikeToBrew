@@ -159,7 +159,7 @@ function makeArrays(mtbObject, breweryObject) {
 		}
 	}
 	// combine the two arrays for sending to marker map
-	mapInfoArr = mtbInfoArr.concat(breweryInfoArr);
+	const mapInfoArr = mtbInfoArr.push(...breweryInfoArr);
 	addMarkers(mapInfoArr);
 }
 
