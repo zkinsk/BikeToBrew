@@ -160,7 +160,7 @@ function makeArrays(mtbObject, breweryObject) {
 		}
 	}
 	// combine the two arrays for sending to marker map
-	const mapInfoArr = mtbInfoArr.push(...breweryInfoArr);
+	const mapInfoArr = [...breweryInfoArr, ...mtbInfoArr];
 	addMarkers(mapInfoArr);
 }
 
@@ -237,7 +237,7 @@ function SearchControl(controlDiv, map) {
 			lat: lat,
 			lng: lon
 		};
-		let dist = distance();
+		let dist = hpr.distance();
 		trailCall(dist, newLoc);
 	});
 }
@@ -447,9 +447,9 @@ function buttonClick() {
 		event.preventDefault();
 		let x = $('#coordinateInput').val();
 		if (x == '' || x == 'Current Location') {
-			geoCall(distance());
+			geoCall(hpr.distance());
 		} else {
-			coordinateCall(x, distance());
+			coordinateCall(x, hpr.distance());
 		}
 	});
 
@@ -460,6 +460,8 @@ function buttonClick() {
 
 	$(document).on('click', '.listData', function() {
 		const markerIndex = $(this).attr('data-index');
+		console.log(markerIndex)
+		console.log(markers)
 		const marker = markers[markerIndex];
 		const latln = marker.getPosition();
 		const lat = latln.lat();
