@@ -2,6 +2,10 @@ const googleApiKey = 'AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0';
 const mtbProjApiKey = '200235024-32c4fc71813961608e163497918dd634';
 
 import { mapStyles } from './mapObj.js';
+<<<<<<< HEAD
+=======
+import hpr from './helper.js'
+>>>>>>> refactor
 
 let map;
 let markers = [];
@@ -159,7 +163,11 @@ function makeArrays(mtbObject, breweryObject) {
 		}
 	}
 	// combine the two arrays for sending to marker map
+<<<<<<< HEAD
 	const mapInfoArr = mtbInfoArr.push(...breweryInfoArr);
+=======
+	const mapInfoArr = mtbInfoArr.concat(breweryInfoArr);
+>>>>>>> refactor
 	addMarkers(mapInfoArr);
 }
 
@@ -189,7 +197,7 @@ function markerMap(mapCtr) {
 	});
 }
 
-// add button to map to re-do search based on loction of center of map
+// add button to map to re-do search based on location of center of map
 function mapPanSearch() {
 	const searchControlDiv = document.createElement('div');
 	const searchControl = new SearchControl(searchControlDiv, map);
@@ -306,6 +314,7 @@ function trailList(mtbInfoArr) {
 		const trailIndex = mtbInfoArr[i].dataIndex;
 		const trailItem = $('<li>');
 		const trailLink = $("<a href='#!'></a>");
+
 		trailLink.attr('data-ID', trailID);
 		trailLink.attr('data-index', trailIndex);
 		trailLink.addClass('listData');
@@ -334,6 +343,9 @@ function trailDetails(trailId) {
 }
 
 // function to call back google for specific details on a brewery using the place ID
+
+
+
 function breweryDetails(breweryId) {
 	const request = {
 		placeId: breweryId,
@@ -464,48 +476,35 @@ function buttonClick() {
 		panZoom(lat, lon);
 		infoWindowPopup(marker);
 	});
+	
+	$(document).on('click', '.popUpDetails', function () {
+		const itemInfo = $(this).data('marker');
+		itemInfo.type === "trail" ? trailDetails(itemInfo.id) : breweryDetails(itemInfo.id)
+	});
+
 }
 
 // add info to the map marker info window
 function infoWindowPopup(marker) {
-	if (marker.type == 'trail') {
-		infowindow.setContent(
-			/*html*/
-			`<div class = "popUp">
+	const markerData = marker.type === 'trail' ? { "type": 'trail' } : { "type": 'brewery' };
+	markerData.id = marker.id;
+	infowindow.setContent(
+		/*html*/
+		`<div class = "popUp">
 					<strong>
 					${marker.title}
 					</strong><br>
 				</div>
 				<button 
-					class="btn waves-effect waves-light btn-small trailDetails" 
+					class="btn waves-effect waves-light btn-small popUpDetails" 
 					type="button" 
 					name="action" 
-					onclick=trailDetails('${marker.id}')
+					data-marker='${JSON.stringify(markerData)}'
 					>
 					More Info
 				</button>`
-		);
-		// infowindow.open(map, marker);
-	} else {
-		const mID = marker.id;
-		infowindow.setContent(
-			/*html */
-			`<div class = "popUp">
-					<strong>${marker.title}</strong>
-					<br>
-					${marker.address}
-					<br>
-					<button 
-					class="btn waves-effect waves-light btn-small trailDetails" 
-					type="button" 
-					name="action"
-					onclick=breweryDetails('${mID}')
-					>
-					More Info
-					</button>
-				</div>`
-		);
-	}
+	);
+
 	$('.gm-style-iw').parent().css({ 'background-color': 'red' });
 	infowindow.open(map, marker);
 }
@@ -523,20 +522,20 @@ function panZoom(lat, lon) {
 }
 
 // distance input validation
-const distance = function() {
-	let d = $('#dist').val();
-	if (d > 50) {
-		d = 50;
-		$('#dist').val('50');
-	} else if (d < 0) {
-		d = 1;
-		$('#dist').val('1');
-	} else if (d == '') {
-		d = 5;
-		$('#dist').val('5');
-	}
-	return d;
-};
+//  function distance() {
+// 	let d = $('#dist').val();
+// 	if (d > 50) {
+// 		d = 50;
+// 		$('#dist').val('50');
+// 	} else if (d < 0) {
+// 		d = 1;
+// 		$('#dist').val('1');
+// 	} else if (d == '') {
+// 		d = 5;
+// 		$('#dist').val('5');
+// 	}
+// 	return d;
+// };
 
 // hides the splash screen after a set amount of time then shows the app
 function splashScreen() {
@@ -545,7 +544,7 @@ function splashScreen() {
 		$('#appContent').fadeIn(1000);
 		$('footer').fadeIn(1000);
 		buttonClick();
-		geoCall(distance());
+		geoCall(hpr.distance());
 	}, 1000);
 }
 
