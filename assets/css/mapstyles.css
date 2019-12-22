@@ -1,0 +1,19 @@
+.map-redo-search-border {
+  background-color: #fff;
+  border: 2px solid #fff;
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, .3);
+  cursor: pointer;
+  margin-top: -50px;
+  margin-right: 60px;
+  text-align: center;
+}
+
+.map-redo-search-interior {
+  color: rgb(25, 25, 25);
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 38px;
+  padding-left: 8px;
+  padding-right: 8px;
+}

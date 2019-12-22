@@ -7,17 +7,16 @@ import hpr from './helper.js';
 let map;
 let markers = [];
 let infowindow;
-// let service;
 let scroll;
 
 // AJAX CALLS
 
 // get lat and longitude based on current user location
 function geoCall(dist) {
-	navigator.geolocation.getCurrentPosition(function(position) {
-		let lat = position.coords.latitude;
-		let lon = position.coords.longitude;
-		let mapCtr = {
+	navigator.geolocation.getCurrentPosition((position) => {
+		const lat = position.coords.latitude;
+		const lon = position.coords.longitude;
+		const mapCtr = {
 			lat: lat,
 			lng: lon
 		};
@@ -34,16 +33,20 @@ function coordinateCall(sParameter, dist) {
 	$.ajax({
 		url: queryURL,
 		method: 'GET'
-	}).then(function(response) {
-		let lat = response.results[0].geometry.location.lat;
-		let lon = response.results[0].geometry.location.lng;
-		let newLoc = {
-			lat: lat,
-			lng: lon
-		};
-		trailCall(dist, newLoc);
-		map.panTo(newLoc);
-	});
+	})
+		.then(function(response) {
+			let lat = response.results[0].geometry.location.lat;
+			let lon = response.results[0].geometry.location.lng;
+			let newLoc = {
+				lat: lat,
+				lng: lon
+			};
+			trailCall(dist, newLoc);
+			map.panTo(newLoc);
+		})
+		.fail(function(err) {
+			throw err;
+		});
 }
 
 // calls mtb project for trails located within a defined radius
@@ -55,13 +58,10 @@ function trailCall(dist, mapCtr) {
 		method: 'GET'
 	})
 		.then(function(response) {
-			const mtbObject = response.trails;
-			if (mtbObject == '') {
-				mtbObject[0] = { name: 'false' };
-			}
+			const mtbObject = response.trails == '' ? [ { name: 'false' } ] : [ ...response.trails ];
 			placesCall(dist, mapCtr, mtbObject);
 		})
-		.fail(function(err) {
+		.catch(function(err) {
 			throw err;
 		});
 }
@@ -85,7 +85,6 @@ function placesCall(dist, mapCtr, mtbObject) {
 		const breweryObject = [];
 		if (status == google.maps.places.PlacesServiceStatus.OK) {
 			breweryObject.push(...results);
-			// console.log(breweryObject);
 			makeArrays(mtbObject, breweryObject);
 		} else {
 			breweryObject[0] = { name: 'false' };
@@ -160,7 +159,7 @@ function makeArrays(mtbObject, breweryObject) {
 		}
 	}
 	// combine the two arrays for sending to marker map
-	const mapInfoArr = [...breweryInfoArr, ...mtbInfoArr];
+	const mapInfoArr = [...mtbInfoArr, ...breweryInfoArr];
 	addMarkers(mapInfoArr);
 }
 
@@ -203,36 +202,24 @@ function mapPanSearch() {
 function SearchControl(controlDiv, map) {
 	// Set CSS for the control border.
 	const controlUI = document.createElement('div');
-	controlUI.style.backgroundColor = '#fff';
-	controlUI.style.border = '2px solid #fff';
-	controlUI.style.borderRadius = '2px';
-	controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-	controlUI.style.cursor = 'pointer';
-	controlUI.style.marginTop = '-50px';
-	controlUI.style.marginRight = '60px';
-	controlUI.style.textAlign = 'center';
+	controlUI.classList.add('map-redo-search-border');
 	controlUI.title = 'Click to redo search at center of map';
 	controlDiv.appendChild(controlUI);
 
 	// Set CSS for the control interior.
 	const controlText = document.createElement('div');
-	controlText.style.color = 'rgb(25,25,25)';
-	controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
-	controlText.style.fontSize = '16px';
-	controlText.style.lineHeight = '38px';
-	controlText.style.paddingLeft = '8px';
-	controlText.style.paddingRight = '8px';
+	controlUI.classList.add('map-redo-search-interior');
 	controlText.innerHTML = 'Redo Search';
 	controlUI.appendChild(controlText);
 
 	// Setup the click event listeners: simply set the map to Chicago.
 	controlUI.addEventListener('click', function() {
-		let newCtr = map.getCenter();
+		const newCtr = map.getCenter();
 		let lat = newCtr.lat();
 		let lon = newCtr.lng();
 		lat = parseFloat(lat.toFixed(5));
 		lon = parseFloat(lon.toFixed(5));
-		$('#coordinateInput').val(lat + ', ' + lon);
+		$('#coordinateInput').val(`${lat}, ${lon}`);
 		let newLoc = {
 			lat: lat,
 			lng: lon
@@ -245,10 +232,9 @@ function SearchControl(controlDiv, map) {
 // draws the markers on the map, adds click event for info box pop up
 function addMarkers(mapInfoArr) {
 	// this for loop clears all the markers from the map before drawing new ones
-	for (let i = 0; i < markers.length; i++) {
-		markers[i].setMap(null);
-	}
-	markers = [];
+	markers.forEach((marker) => marker.setMap(null));
+	markers = []; // clears the marker array
+
 	const iconBase = 'assets/images/';
 	const icons = {
 		brewery: {
@@ -258,18 +244,17 @@ function addMarkers(mapInfoArr) {
 			icon: iconBase + 'cycling.png'
 		}
 	};
+
 	infowindow = new google.maps.InfoWindow();
-	for (let i = 0; i < mapInfoArr.length; i++) {
-		const position = { lat: mapInfoArr[i].lat, lng: mapInfoArr[i].lon };
-		const type = mapInfoArr[i].type;
-		const name = mapInfoArr[i].name;
-		const url = mapInfoArr[i].tUrl;
-		const id = mapInfoArr[i].ID;
-		const address = mapInfoArr[i].address;
+
+	// for (let i = 0; i < mapInfoArr.length; i++) {
+	mapInfoArr.forEach((item) => {
+		const position = { lat: item.lat, lng: item.lon };
+		const { type, name, tUrl, ID, address } = item;
 		const marker = new google.maps.Marker({
 			position: position,
-			id: id,
-			url: url,
+			id: ID,
+			url: tUrl,
 			title: name,
 			type: type,
 			map: map,
@@ -280,7 +265,7 @@ function addMarkers(mapInfoArr) {
 		google.maps.event.addListener(marker, 'click', function() {
 			infoWindowPopup(this);
 		});
-	}
+	});
 	zoomExtents();
 }
 
@@ -305,13 +290,12 @@ function trailList(mtbInfoArr) {
 		const trailName = mtbInfoArr[i].name;
 		const trailID = mtbInfoArr[i].ID;
 		const trailIndex = mtbInfoArr[i].dataIndex;
-		const trailItem = $('<li>');
-		const trailLink = $("<a href='#!'></a>");
 
-		trailLink.attr('data-ID', trailID);
-		trailLink.attr('data-index', trailIndex);
-		trailLink.addClass('listData');
-		trailLink.text(trailName);
+		const trailItem = $('<li>');
+		const trailLink = $(
+			`<a href='#!' class='listData' data-ID='${trailID}', data-index='${trailIndex}'>${trailName}</a>`
+		);
+
 		trailItem.append(trailLink);
 		$('.mtbList').append(trailItem);
 	}
@@ -373,9 +357,8 @@ function breweryDetails(breweryId) {
 			$('.carousel').empty();
 			if (place.photos == null) {
 				for (let i = 0; i < 1; i++) {
-					const cAnchor = $('<a>');
-					cAnchor.addClass('carousel-item');
-					cAnchor.attr('href', '#one!');
+					const cAnchor = $('<a>').addClass('carousel-item').attr('href', '#one!');
+
 					const defaultImg = $('<img>').attr({
 						src: 'assets/images/Copper-Moonshine-Still-3.jpg',
 						width: '300px'
@@ -390,12 +373,10 @@ function breweryDetails(breweryId) {
 					const ratio = height / width;
 					if (ratio < 1.4) {
 						//checks for image size ratio so as to not put too tall images in carosel
+						const cAnchor = $('<a>').addClass('carousel-item').attr({ href: webSite, target: '_blank' });
+
 						const pURL = place.photos[i].getUrl();
-						const cAnchor = $('<a>');
-						cAnchor.addClass('carousel-item');
-						cAnchor.attr({ href: webSite, target: '_blank' });
-						const cImg = $('<img>');
-						cImg.attr('src', pURL);
+						const cImg = $('<img>').attr('src', pURL);
 						cAnchor.append(cImg);
 						$('.carousel').append(cAnchor);
 					}
@@ -429,16 +410,15 @@ function timer() {
 // receives brewery info from google places, populates brewery array and updates DOM list of breweries
 function brewList(breweryInfoArr) {
 	$('.breweryList').empty();
-	for (let i = 0; i < breweryInfoArr.length; i++) {
-		const breweryName = breweryInfoArr[i].name;
-		const breweryIndex = breweryInfoArr[i].dataIndex;
+	breweryInfoArr.forEach((item) => {
+		const { name, dataIndex } = item;
 		const brewItem = $('<li>');
-		const brewLink = $('<a href="#!">' + breweryName + '</a>');
-		brewLink.attr('data-index', breweryIndex);
+		const brewLink = $('<a href="#!">' + name + '</a>');
+		brewLink.attr('data-index', dataIndex);
 		brewLink.addClass('listData');
 		brewItem.append(brewLink);
 		$('.breweryList').append(brewItem);
-	}
+	});
 }
 
 // activates various button click functionalities
@@ -460,8 +440,6 @@ function buttonClick() {
 
 	$(document).on('click', '.listData', function() {
 		const markerIndex = $(this).attr('data-index');
-		console.log(markerIndex)
-		console.log(markers)
 		const marker = markers[markerIndex];
 		const latln = marker.getPosition();
 		const lat = latln.lat();
@@ -470,7 +448,7 @@ function buttonClick() {
 		infoWindowPopup(marker);
 	});
 
-	$(document).on('click', '.popUpDetails', function() {
+	$('#googleMapsMarkers').on('click', '.popUpDetails', function() {
 		const itemInfo = $(this).data('marker');
 		itemInfo.type === 'trail' ? trailDetails(itemInfo.id) : breweryDetails(itemInfo.id);
 	});
