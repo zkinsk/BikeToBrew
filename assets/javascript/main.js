@@ -13,12 +13,11 @@ let scroll;
 
 // get lat and longitude based on current user location
 function geoCall(dist) {
-	navigator.geolocation.getCurrentPosition((position) => {
-		const lat = position.coords.latitude;
-		const lon = position.coords.longitude;
+	navigator.geolocation.getCurrentPosition(position => {
+		const { latitude, longitude } = position.coords;
 		const mapCtr = {
-			lat: lat,
-			lng: lon
+			lat: latitude,
+			lng: longitude
 		};
 		$('#markerMap').empty();
 		trailCall(dist, mapCtr);
@@ -34,17 +33,16 @@ function coordinateCall(sParameter, dist) {
 		url: queryURL,
 		method: 'GET'
 	})
-		.then(function(response) {
-			let lat = response.results[0].geometry.location.lat;
-			let lon = response.results[0].geometry.location.lng;
+		.then(response => {
+			const { lat, lng } = response.results[0].geometry.location;
 			let newLoc = {
 				lat: lat,
-				lng: lon
+				lng: lng
 			};
 			trailCall(dist, newLoc);
 			map.panTo(newLoc);
 		})
-		.fail(function(err) {
+		.catch(err => {
 			throw err;
 		});
 }
@@ -57,11 +55,11 @@ function trailCall(dist, mapCtr) {
 		url: queryURL,
 		method: 'GET'
 	})
-		.then(function(response) {
-			const mtbObject = response.trails == '' ? [ { name: 'false' } ] : [ ...response.trails ];
+		.then(response => {
+			const mtbObject = response.trails.length === 0 ? [ { name: 'false' } ] : [ ...response.trails ];
 			placesCall(dist, mapCtr, mtbObject);
 		})
-		.catch(function(err) {
+		.catch(err => {
 			throw err;
 		});
 }
@@ -82,14 +80,8 @@ function placesCall(dist, mapCtr, mtbObject) {
 	service.nearbySearch(request, callback);
 
 	function callback(results, status) {
-		const breweryObject = [];
-		if (status == google.maps.places.PlacesServiceStatus.OK) {
-			breweryObject.push(...results);
-			makeArrays(mtbObject, breweryObject);
-		} else {
-			breweryObject[0] = { name: 'false' };
-			makeArrays(mtbObject, breweryObject);
-		}
+		const breweryObject = status === 'OK' ? [ ...results ] : [ { name: 'false' } ];
+		makeArrays(mtbObject, breweryObject);
 	}
 }
 
@@ -97,7 +89,6 @@ function placesCall(dist, mapCtr, mtbObject) {
 function makeArrays(mtbObject, breweryObject) {
 	const mtbInfoArr = [];
 	const breweryInfoArr = [];
-	let i = 0;
 	// pull info from Mountain Bike Object
 	if (mtbObject[0].name === 'false') {
 		$('.mtbList').empty();
@@ -107,26 +98,23 @@ function makeArrays(mtbObject, breweryObject) {
 		item.append(link);
 		$('.mtbList').append(item);
 	} else {
-		for (i = 0; i < mtbObject.length; i++) {
-			const trailName = mtbObject[i].name;
-			const trailLat = mtbObject[i].latitude;
-			const trailLon = mtbObject[i].longitude;
-			const trailID = mtbObject[i].id;
-			const trailUrl = mtbObject[i].url;
+		// for (i = 0; i < mtbObject.length; i++) {
+		mtbObject.forEach((trail, index) => {
+			const { name, url, id, latitude, longitude } = trail;
 
 			const trailInfo = {
-				name: trailName,
-				ID: trailID,
-				lat: trailLat,
-				lon: trailLon,
-				tUrl: trailUrl,
+				name: name,
+				ID: id,
+				lat: latitude,
+				lon: longitude,
+				tUrl: url,
 				type: 'trail',
-				dataIndex: i
+				dataIndex: index
 			};
 
 			mtbInfoArr.push(trailInfo);
 			trailList(mtbInfoArr);
-		}
+		});
 	}
 
 	// pull info from brewery object
@@ -138,28 +126,28 @@ function makeArrays(mtbObject, breweryObject) {
 		item.append(link);
 		$('.breweryList').append(item);
 	} else {
-		for (let k = 0; k < breweryObject.length; k++) {
-			const breweryName = breweryObject[k].name;
-			const breweryLat = breweryObject[k].geometry.location.lat();
-			const breweryLon = breweryObject[k].geometry.location.lng();
-			const breweryID = breweryObject[k].place_id;
+		// for (let k = 0; k < breweryObject.length; k++) {
+		breweryObject.forEach((brewery, index) => {
+			const { name, place_id, vicinity } = brewery;
+			const breweryLat = brewery.geometry.location.lat();
+			const breweryLon = brewery.geometry.location.lng();
 
 			const breweryInfo = {
-				name: breweryName,
-				ID: breweryID,
+				name: name,
+				ID: place_id,
 				lat: breweryLat,
 				lon: breweryLon,
 				type: 'brewery',
-				dataIndex: k + i,
-				address: breweryObject[k].vicinity
+				dataIndex: index + mtbObject.length,
+				address: vicinity
 			};
 
 			breweryInfoArr.push(breweryInfo);
 			brewList(breweryInfoArr);
-		}
+		});
 	}
 	// combine the two arrays for sending to marker map
-	const mapInfoArr = [...mtbInfoArr, ...breweryInfoArr];
+	const mapInfoArr = [ ...mtbInfoArr, ...breweryInfoArr ];
 	addMarkers(mapInfoArr);
 }
 
@@ -176,11 +164,6 @@ function markerMap(mapCtr) {
 		fullscreenControl: true,
 		gestureHandling: 'greedy',
 		styles: mapStyles //Imported from mapObj.js
-	});
-
-	mapPanSearch();
-	google.maps.event.addListener(map, 'click', function(event) {
-		infowindow.close();
 	});
 
 	mapPanSearch();
@@ -216,13 +199,13 @@ function SearchControl(controlDiv, map) {
 	controlUI.addEventListener('click', function() {
 		const newCtr = map.getCenter();
 		let lat = newCtr.lat();
-		let lon = newCtr.lng();
+		let lng = newCtr.lng();
 		lat = parseFloat(lat.toFixed(5));
-		lon = parseFloat(lon.toFixed(5));
-		$('#coordinateInput').val(`${lat}, ${lon}`);
+		lng = parseFloat(lng.toFixed(5));
+		$('#coordinateInput').val(`${lat}, ${lng}`);
 		let newLoc = {
 			lat: lat,
-			lng: lon
+			lng: lng
 		};
 		let dist = hpr.distance();
 		trailCall(dist, newLoc);
@@ -232,7 +215,7 @@ function SearchControl(controlDiv, map) {
 // draws the markers on the map, adds click event for info box pop up
 function addMarkers(mapInfoArr) {
 	// this for loop clears all the markers from the map before drawing new ones
-	markers.forEach((marker) => marker.setMap(null));
+	markers.forEach(marker => marker.setMap(null));
 	markers = []; // clears the marker array
 
 	const iconBase = 'assets/images/';
@@ -248,7 +231,7 @@ function addMarkers(mapInfoArr) {
 	infowindow = new google.maps.InfoWindow();
 
 	// for (let i = 0; i < mapInfoArr.length; i++) {
-	mapInfoArr.forEach((item) => {
+	mapInfoArr.forEach(item => {
 		const position = { lat: item.lat, lng: item.lon };
 		const { type, name, tUrl, ID, address } = item;
 		const marker = new google.maps.Marker({
@@ -286,19 +269,16 @@ function zoomExtents() {
 // receives info from mtb api, populates mtb array and updates DOM list of trails
 function trailList(mtbInfoArr) {
 	$('.mtbList').empty();
-	for (let i = 0; i < mtbInfoArr.length; i++) {
-		const trailName = mtbInfoArr[i].name;
-		const trailID = mtbInfoArr[i].ID;
-		const trailIndex = mtbInfoArr[i].dataIndex;
+	// for (let i = 0; i < mtbInfoArr.length; i++) {
+	mtbInfoArr.forEach(trail => {
+		const { name, ID, dataIndex } = trail;
 
 		const trailItem = $('<li>');
-		const trailLink = $(
-			`<a href='#!' class='listData' data-ID='${trailID}', data-index='${trailIndex}'>${trailName}</a>`
-		);
+		const trailLink = $(`<a href='#!' class='listData' data-ID='${ID}', data-index='${dataIndex}'>${name}</a>`);
 
 		trailItem.append(trailLink);
 		$('.mtbList').append(trailItem);
-	}
+	});
 }
 
 // open modal when trail details button is clicked
@@ -367,20 +347,19 @@ function breweryDetails(breweryId) {
 					$('.carousel').append(cAnchor);
 				}
 			} else {
-				for (let i = 0; i < place.photos.length; i++) {
-					const height = place.photos[i].height;
-					const width = place.photos[i].width;
+				place.photos.forEach(photo => {
+					const { height, width } = photo;
 					const ratio = height / width;
 					if (ratio < 1.4) {
 						//checks for image size ratio so as to not put too tall images in carosel
 						const cAnchor = $('<a>').addClass('carousel-item').attr({ href: webSite, target: '_blank' });
 
-						const pURL = place.photos[i].getUrl();
+						const pURL = photo.getUrl();
 						const cImg = $('<img>').attr('src', pURL);
 						cAnchor.append(cImg);
 						$('.carousel').append(cAnchor);
 					}
-				}
+				});
 				scroll = setInterval(timer, 4000);
 			}
 			$('#modalBrewery').modal('open');
@@ -410,7 +389,7 @@ function timer() {
 // receives brewery info from google places, populates brewery array and updates DOM list of breweries
 function brewList(breweryInfoArr) {
 	$('.breweryList').empty();
-	breweryInfoArr.forEach((item) => {
+	breweryInfoArr.forEach(item => {
 		const { name, dataIndex } = item;
 		const brewItem = $('<li>');
 		const brewLink = $('<a href="#!">' + name + '</a>');
