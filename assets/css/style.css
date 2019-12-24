@@ -22,6 +22,10 @@ button {
     background-color: #e9a502;
 }
 
+#googleMapsMarkers {
+    height: 100%;
+}
+
 .btn {
     background-color: #4A2C1A !important;
     font-family: futura-pt-condensed, sans-serif;
@@ -217,11 +221,14 @@ input:-ms-input-placeholder {
     box-shadow: 10px 10px 10px -6px rgb(75, 44, 26);
     padding-right: 0px;
     width: 100%;
+    height: 70vh;
+    min-height: 450px;
 }
 
 #markerMap {
     margin-bottom: -20px;
-    height: 450px;
+    min-height: 450px;
+    height: 100%;
     width: 100%;
     border-right: 3px solid #4A2C1A;
 }
@@ -229,19 +236,41 @@ input:-ms-input-placeholder {
 #resultsHolder {
     margin-right: 0px;
     padding-right: 0px;
-    /* width: 240px; */
+    height: 100%;
+}
+
+.results-box {
+    height: 100%;
 }
 
 #searchResults {
-    margin-top: 0px;
-    margin-right: -12px;
-    margin-bottom: 0px;
-    margin-left: -35px;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 450px;
+}
+
+#searchResults li {
+    height: 50%
+}
+
+.no-padding-hz {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.full-height {
+    height: 100% !important;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .searchHeader {
     background-color: #4A2C1A;
-    height: 55 px;
+    height: 55px;
     color: #ffffff;
     text-align: left;
     box-shadow: 0px 4px 4px rgb(75, 44, 26, 0.5);
@@ -252,8 +281,8 @@ input:-ms-input-placeholder {
 }
 
 .searchList {
+    height: calc(100% - 50px);
     background-color: #A36301;
-    height: 167px;
     color: #ffffff;
     overflow-y: scroll;
     font-family: futura-pt-condensed, sans-serif;
@@ -377,6 +406,9 @@ footer {
 }
 
 @media only screen and (max-width: 550px) {
+    #googleMapsMarkers {
+        padding: 0 10px;
+    }
     .container {
         width: 100%;
     }
