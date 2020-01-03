@@ -62,13 +62,16 @@ function mtbAndBreweryAPICalls(dist, mapCtr) {
 // pushes desired info from AJAX objects then calls list functions and marker map
 function makeArrays(mtbObject, breweryObject) {
 	// build & combine the two arrays for sending to marker map
-	const mtbArrayLength = mtbObject.length;
-
 	const mtbInfoArr = helper.buildMTBArray(mtbObject);
+
+	const mtbArrayLength = mtbObject.length;
 	const breweryInfoArr = helper.buildBreweryArray(breweryObject, mtbArrayLength);
-	trailList(mtbInfoArr);
-	brewList(breweryInfoArr);
+
+	if (mtbObject[0].name !== 'false') buildList(mtbInfoArr, 'trail');
+	if (breweryObject[0].name !== 'false') buildList(breweryInfoArr, 'brewery');
+
 	const mapInfoArr = [ ...mtbInfoArr, ...breweryInfoArr ];
+
 	addMarkers(mapInfoArr);
 }
 
@@ -180,19 +183,16 @@ function zoomExtents() {
 	}
 }
 
-// receives info from mtb api, populates mtb array and updates DOM list of trails
-function trailList(mtbInfoArr) {
-	$('.mtbList').empty();
-	// for (let i = 0; i < mtbInfoArr.length; i++) {
-	mtbInfoArr.forEach(trail => {
-		const { name, ID, dataIndex } = trail;
-
-		const trailItem = $('<li>');
-		const trailLink = $(`<a href='#!' class='listData' data-ID='${ID}', data-index='${dataIndex}'>${name}</a>`);
-
-		trailItem.append(trailLink);
-		$('.mtbList').append(trailItem);
+function buildList(objArr, type) {
+	const itemsArr = objArr.map(item => {
+		const { name, ID, dataIndex } = item;
+		return /*html*/ `
+				<li>
+					<a href='#!' class='listData' data-ID='${ID}', data-index='${dataIndex}'>${name}</a>
+				</li>
+			`;
 	});
+	type === 'trail' ? $('.mtbList').empty().append(itemsArr) : $('.breweryList').empty().append(itemsArr);
 }
 
 // open modal when trail details button is clicked
@@ -298,20 +298,6 @@ function initCarouselModal() {
 // this is the function to automatically advance the carousel to the next image
 function timer() {
 	$('.carousel').carousel('next');
-}
-
-// receives brewery info from google places, populates brewery array and updates DOM list of breweries
-function brewList(breweryInfoArr) {
-	$('.breweryList').empty();
-	breweryInfoArr.forEach(item => {
-		const { name, dataIndex } = item;
-		const brewItem = $('<li>');
-		const brewLink = $('<a href="#!">' + name + '</a>');
-		brewLink.attr('data-index', dataIndex);
-		brewLink.addClass('listData');
-		brewItem.append(brewLink);
-		$('.breweryList').append(brewItem);
-	});
 }
 
 // activates various button click functionalities

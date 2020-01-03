@@ -24,13 +24,11 @@ export default {
 			item.append(link);
 			$('.breweryList').append(item);
 		} else {
-			// for (let k = 0; k < breweryObject.length; k++) {
-			breweryObject.forEach((brewery, index) => {
+			breweryInfoArr = breweryObject.map((brewery, index) => {
 				const { name, place_id, vicinity } = brewery;
 				const breweryLat = brewery.geometry.location.lat();
 				const breweryLon = brewery.geometry.location.lng();
-
-				const breweryInfo = {
+				return {
 					name: name,
 					ID: place_id,
 					lat: breweryLat,
@@ -39,8 +37,6 @@ export default {
 					dataIndex: index + indexAdder,
 					address: vicinity
 				};
-
-				breweryInfoArr.push(breweryInfo);
 			});
 		}
 		return breweryInfoArr;
@@ -49,22 +45,16 @@ export default {
 	buildMTBArray: function(mtbObject) {
 		let mtbInfoArr = [];
 		if (mtbObject[0].name === 'false') {
-			// $('.mtbList').empty();
-			// let item = $('<li>');
-			// let link = $("<a href='#!'></a>");
-			// link.text('No Trails in your Search Area');
-			// item.append(link);
-			// $('.mtbList').append(item);
-			const nullTrailInfo = {
-				name: 'There are no Trails in your Search Area',
-				ID: -1
-			};
-			mtbInfoArr.push(nullTrailInfo);
+			$('.mtbList').empty();
+			let item = $('<li>');
+			let link = $("<a href='#!'></a>");
+			link.text('No Trails in your Search Area');
+			item.append(link);
+			$('.mtbList').append(item);
 		} else {
-			mtbObject.forEach((trail, index) => {
+			mtbInfoArr = mtbObject.map((trail, index) => {
 				const { name, url, id, latitude, longitude } = trail;
-
-				const trailInfo = {
+				return {
 					name: name,
 					ID: id,
 					lat: latitude,
@@ -73,8 +63,6 @@ export default {
 					type: 'trail',
 					dataIndex: index
 				};
-
-				mtbInfoArr.push(trailInfo);
 			});
 		}
 		return mtbInfoArr;
