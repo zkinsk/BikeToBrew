@@ -8,23 +8,16 @@ export default {
 		});
 	},
 
-	trailCall: function(dist, mapCtr) {
+	trailCall: async function(dist, mapCtr) {
 		const queryURL = `https://www.mtbproject.com/data/get-trails?lat=${mapCtr.lat}&lon=${mapCtr.lng}&maxDistance=${dist}&key=${mtbProjApiKey}`;
-
-		$.ajax({
+		let response = await $.ajax({
 			url: queryURL,
 			method: 'GET'
-		})
-			.then(response => {
-				const mtbObject = response.trails.length === 0 ? [ { name: 'false' } ] : [ ...response.trails ];
-				this.placesCall(dist, mapCtr, mtbObject);
-			})
-			.catch(err => {
-				throw err;
-			});
+		});
+		return response.trails.length === 0 ? [ { name: 'false' } ] : [ ...response.trails ];
 	},
 
-	placesCall: function(dist, mapCtr, mtbObject) {
+	placesCall: function(dist, mapCtr, map) {
 		let distMeters = dist * 1609.3;
 
 		const request = {
@@ -36,11 +29,11 @@ export default {
 
 		const service = new google.maps.places.PlacesService(map);
 
-		service.nearbySearch(request, callback);
-
-		function callback(results, status) {
-			const breweryObject = status === 'OK' ? [ ...results ] : [ { name: 'false' } ];
-			makeArrays(mtbObject, breweryObject);
-		}
+		return new Promise((resolve, reject) => {
+			service.nearbySearch(request, (results, status) => {
+				const breweryObject = status === 'OK' ? [ ...results ] : [ { name: 'false' } ];
+				resolve(breweryObject);
+			});
+		});
 	}
 };

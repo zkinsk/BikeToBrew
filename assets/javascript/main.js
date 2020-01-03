@@ -6,6 +6,7 @@ import api from './api.js';
 // import map from './map/map.js';
 import { mapSettings, mapStyles } from './map/mapObj.js';
 import gMap from './map/map.js';
+import helper from './helper.js';
 
 let map;
 let infowindow;
@@ -23,8 +24,9 @@ function geoCall(dist) {
 			lng: lng
 		};
 		$('#markerMap').empty();
-		trailCall(dist, mapCtr);
+		// trailCall(dist, mapCtr);
 		markerMap(mapCtr);
+		mtbAndBreweryAPICalls(dist, mapCtr);
 	});
 }
 
@@ -50,113 +52,28 @@ function coordinateCall(sParameter, dist) {
 		});
 }
 
-// calls mtb project for trails located within a defined radius
-function trailCall(dist, mapCtr) {
-	let queryURL = `https://www.mtbproject.com/data/get-trails?lat=${mapCtr.lat}&lon=${mapCtr.lng}&maxDistance=${dist}&key=${mtbProjApiKey}`;
-
-	$.ajax({
-		url: queryURL,
-		method: 'GET'
-	})
-		.then(response => {
-			const mtbObject = response.trails.length === 0 ? [ { name: 'false' } ] : [ ...response.trails ];
-			placesCall(dist, mapCtr, mtbObject);
-		})
-		.catch(err => {
-			throw err;
-		});
-}
-
-// calls google places to perform search for breweries within the specified search radius
-function placesCall(dist, mapCtr, mtbObject) {
-	let distMeters = dist * 1609.3;
-
-	const request = {
-		location: mapCtr,
-		radius: distMeters,
-		keyword: 'brewery',
-		rankBy: google.maps.places.RankBy.PROMINENCE
-	};
-
-	const service = new google.maps.places.PlacesService(map);
-
-	service.nearbySearch(request, callback);
-
-	function callback(results, status) {
-		const breweryObject = status === 'OK' ? [ ...results ] : [ { name: 'false' } ];
-		makeArrays(mtbObject, breweryObject);
-	}
+// calls both brewery and mtb apis in an ansyncronous manner
+function mtbAndBreweryAPICalls(dist, mapCtr) {
+	Promise.all([ api.trailCall(dist, mapCtr), api.placesCall(dist, mapCtr, map) ]).then(res => {
+		makeArrays(res[0], res[1]);
+	});
 }
 
 // pushes desired info from AJAX objects then calls list functions and marker map
 function makeArrays(mtbObject, breweryObject) {
-	const mtbInfoArr = [];
-	const breweryInfoArr = [];
-	// pull info from Mountain Bike Object
-	if (mtbObject[0].name === 'false') {
-		$('.mtbList').empty();
-		let item = $('<li>');
-		let link = $("<a href='#!'></a>");
-		link.text('No Trails in your Search Area');
-		item.append(link);
-		$('.mtbList').append(item);
-	} else {
-		// for (i = 0; i < mtbObject.length; i++) {
-		mtbObject.forEach((trail, index) => {
-			const { name, url, id, latitude, longitude } = trail;
+	// build & combine the two arrays for sending to marker map
+	const mtbArrayLength = mtbObject.length;
 
-			const trailInfo = {
-				name: name,
-				ID: id,
-				lat: latitude,
-				lon: longitude,
-				tUrl: url,
-				type: 'trail',
-				dataIndex: index
-			};
-
-			mtbInfoArr.push(trailInfo);
-			trailList(mtbInfoArr);
-		});
-	}
-
-	// pull info from brewery object
-	if (breweryObject[0].name === 'false') {
-		$('.breweryList').empty();
-		const item = $('<li>');
-		const link = $("<a href='#!'></a>");
-		link.text('No Breweries in your Search Area');
-		item.append(link);
-		$('.breweryList').append(item);
-	} else {
-		// for (let k = 0; k < breweryObject.length; k++) {
-		breweryObject.forEach((brewery, index) => {
-			const { name, place_id, vicinity } = brewery;
-			const breweryLat = brewery.geometry.location.lat();
-			const breweryLon = brewery.geometry.location.lng();
-
-			const breweryInfo = {
-				name: name,
-				ID: place_id,
-				lat: breweryLat,
-				lon: breweryLon,
-				type: 'brewery',
-				dataIndex: index + mtbObject.length,
-				address: vicinity
-			};
-
-			breweryInfoArr.push(breweryInfo);
-			brewList(breweryInfoArr);
-		});
-	}
-	// combine the two arrays for sending to marker map
+	const mtbInfoArr = helper.buildMTBArray(mtbObject);
+	const breweryInfoArr = helper.buildBreweryArray(breweryObject, mtbArrayLength);
+	trailList(mtbInfoArr);
+	brewList(breweryInfoArr);
 	const mapInfoArr = [ ...mtbInfoArr, ...breweryInfoArr ];
 	addMarkers(mapInfoArr);
 }
 
 // Draw google map with our specific styling
 function markerMap(mapCtr) {
-	// gMap.markerMap(mapCtr);
 	map = new google.maps.Map(document.getElementById('markerMap'), {
 		...mapSettings(mapCtr),
 		styles: mapStyles //Imported from mapObj.js
@@ -204,7 +121,8 @@ function SearchControl(controlDiv, map) {
 			lng: lng
 		};
 		let dist = hpr.distance();
-		trailCall(dist, newLoc);
+		// trailCall(dist, newLoc);
+		mtbAndBreweryAPICalls(dist, newLoc);
 	});
 }
 
