@@ -1,23 +1,26 @@
 const googleApiKey = 'AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0';
 const mtbProjApiKey = '200235024-32c4fc71813961608e163497918dd634';
 
-import { mapStyles } from './mapObj.js';
 import hpr from './helper.js';
+import api from './api.js';
+// import map from './map/map.js';
+import { mapSettings, mapStyles } from './map/mapObj.js';
+import gMap from './map/map.js';
 
 let map;
-let markers = [];
 let infowindow;
+let markers = [];
 let scroll;
 
 // AJAX CALLS
 
 // get lat and longitude based on current user location
 function geoCall(dist) {
-	navigator.geolocation.getCurrentPosition(position => {
-		const { latitude, longitude } = position.coords;
+	api.userLoc().then(res => {
+		const { latitude: lat, longitude: lng } = res.coords;
 		const mapCtr = {
-			lat: latitude,
-			lng: longitude
+			lat: lat,
+			lng: lng
 		};
 		$('#markerMap').empty();
 		trailCall(dist, mapCtr);
@@ -153,16 +156,9 @@ function makeArrays(mtbObject, breweryObject) {
 
 // Draw google map with our specific styling
 function markerMap(mapCtr) {
+	// gMap.markerMap(mapCtr);
 	map = new google.maps.Map(document.getElementById('markerMap'), {
-		zoom: 11,
-		center: mapCtr,
-		zoomControl: true,
-		mapTypeControl: false,
-		scaleControl: false,
-		streetViewControl: false,
-		rotateControl: false,
-		fullscreenControl: true,
-		gestureHandling: 'greedy',
+		...mapSettings(mapCtr),
 		styles: mapStyles //Imported from mapObj.js
 	});
 
