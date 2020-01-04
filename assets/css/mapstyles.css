@@ -1,3 +1,15 @@
+#markerMap {
+  margin-bottom: -20px;
+  min-height: 450px;
+  height: 100%;
+  width: 100%;
+  border-right: 3px solid #4A2C1A;
+}
+
+#googleMapsMarkers {
+  height: 100%;
+}
+
 .map-redo-search-border {
   background-color: #fff;
   border: 2px solid #fff;
@@ -16,4 +28,16 @@
   line-height: 38px;
   padding-left: 8px;
   padding-right: 8px;
+}
+
+.popUp {
+  font-family: futura-pt-condensed, sans-serif;
+  font-weight: 300;
+  font-size: 20px !important;
+  text-align: center;
+}
+
+.popUpDetails {
+  display: block;
+  margin: auto
 }
