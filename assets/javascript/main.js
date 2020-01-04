@@ -1,12 +1,11 @@
 const googleApiKey = 'AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0';
-const mtbProjApiKey = '200235024-32c4fc71813961608e163497918dd634';
 
-import hpr from './helper.js';
-import api from './api.js';
+import hpr from './modules/helper.js';
+import api from './modules/api.js';
 // import map from './map/map.js';
 import { mapSettings, mapStyles } from './map/mapObj.js';
 import gMap from './map/map.js';
-import helper from './helper.js';
+import helper from './modules/helper.js';
 
 let map;
 let infowindow;
@@ -24,32 +23,27 @@ function geoCall(dist) {
 			lng: lng
 		};
 		$('#markerMap').empty();
-		// trailCall(dist, mapCtr);
 		markerMap(mapCtr);
 		mtbAndBreweryAPICalls(dist, mapCtr);
 	});
 }
 
 // lat and lon based on zip code or other search parameters - provided by google api
-function coordinateCall(sParameter, dist) {
+async function coordinateCall(sParameter, dist) {
 	const queryURL = `https://maps.googleapis.com/maps/api/geocode/json?address=${sParameter}&key=${googleApiKey}`;
 
-	$.ajax({
-		url: queryURL,
-		method: 'GET'
-	})
-		.then(response => {
-			const { lat, lng } = response.results[0].geometry.location;
-			let newLoc = {
-				lat: lat,
-				lng: lng
-			};
-			trailCall(dist, newLoc);
-			map.panTo(newLoc);
-		})
-		.catch(err => {
-			throw err;
-		});
+	try {
+		const newLoc = await api.coordinateCall(sParameter);
+		mtbAndBreweryAPICalls(dist, newLoc);
+		map.panTo(newLoc);
+	} catch (err) {
+		$('#coordinateInput').val("That Location Doesn't Exist");
+		setTimeout(() => {
+			{
+				$('#coordinateInput').val('');
+			}
+		}, 2000);
+	}
 }
 
 // calls both brewery and mtb apis in an ansyncronous manner
@@ -62,16 +56,15 @@ function mtbAndBreweryAPICalls(dist, mapCtr) {
 // pushes desired info from AJAX objects then calls list functions and marker map
 function makeArrays(mtbObject, breweryObject) {
 	// build & combine the two arrays for sending to marker map
-	const mtbInfoArr = helper.buildMTBArray(mtbObject);
+	const mtbInfoArr = helper.buildArrays(mtbObject, null, 'trail');
 
 	const mtbArrayLength = mtbObject.length;
-	const breweryInfoArr = helper.buildBreweryArray(breweryObject, mtbArrayLength);
+	const breweryInfoArr = helper.buildArrays(breweryObject, mtbArrayLength, 'brewery');
 
-	if (mtbObject[0].name !== 'false') buildList(mtbInfoArr, 'trail');
-	if (breweryObject[0].name !== 'false') buildList(breweryInfoArr, 'brewery');
+	if (mtbObject[0].name !== 'false') helper.buildAndDisplayList(mtbInfoArr, 'trail');
+	if (breweryObject[0].name !== 'false') helper.buildAndDisplayList(breweryInfoArr, 'brewery');
 
 	const mapInfoArr = [ ...mtbInfoArr, ...breweryInfoArr ];
-
 	addMarkers(mapInfoArr);
 }
 
@@ -183,18 +176,6 @@ function zoomExtents() {
 	}
 }
 
-function buildList(objArr, type) {
-	const itemsArr = objArr.map(item => {
-		const { name, ID, dataIndex } = item;
-		return /*html*/ `
-				<li>
-					<a href='#!' class='listData' data-ID='${ID}', data-index='${dataIndex}'>${name}</a>
-				</li>
-			`;
-	});
-	type === 'trail' ? $('.mtbList').empty().append(itemsArr) : $('.breweryList').empty().append(itemsArr);
-}
-
 // open modal when trail details button is clicked
 function trailDetails(trailId) {
 	const trailWidget = $('<div>');
@@ -227,7 +208,6 @@ function breweryDetails(breweryId) {
 	// this function was originally nested because it needed access to variables that were sent to the function breweryDetails - that is no longer the case, but I have left it nested
 	function placeDetails(place, status) {
 		if (status === google.maps.places.PlacesServiceStatus.OK) {
-			// console.log(place);
 			const name = place.name;
 			const rating = place.rating;
 			const starTotal = 5;

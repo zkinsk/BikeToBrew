@@ -35,5 +35,18 @@ export default {
 				resolve(breweryObject);
 			});
 		});
+	},
+
+	coordinateCall: async function(searchParameter) {
+		const queryURL = `https://maps.googleapis.com/maps/api/geocode/json?address=${searchParameter}&key=${googleApiKey}`;
+		const response = await $.ajax({
+			url: queryURL,
+			method: 'GET'
+		});
+		const { lat, lng } = response.results[0].geometry.location;
+		return {
+			lat: lat,
+			lng: lng
+		};
 	}
 };
