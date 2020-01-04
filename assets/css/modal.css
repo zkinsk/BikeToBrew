@@ -1,0 +1,52 @@
+#modalBrewery {
+  width: fit-content;
+}
+
+#breweryBox {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  width: auto;
+  max-width: 440px;
+  min-height: 400px;
+  background-color: black;
+  color: white;
+  padding: 10px;
+}
+
+#brewAdressModal a {
+  color: rgb(66, 102, 245);
+}
+
+#breweryImageBox {
+  margin: auto;
+  max-width: 400px;
+}
+
+.carousel {
+  max-height: 250px;
+}
+
+.stars-outer {
+  display: inline-block;
+  position: relative;
+  font-family: FontAwesome;
+}
+
+.stars-outer::before {
+  content: "★★★★★";
+}
+
+.stars-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+}
+
+.stars-inner::before {
+  content: "★★★★★";
+  color: #f8ce0b;
+}
