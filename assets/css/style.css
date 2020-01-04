@@ -34,6 +34,15 @@ button {
     margin-top: 3px;
 }
 
+.popUp {
+    text-align: center;
+}
+
+.popUpDetails {
+    display: block;
+    margin: auto
+}
+
 #appContent {
     display: none;
     margin-top: 20px;
