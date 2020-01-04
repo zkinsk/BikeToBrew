@@ -1,11 +1,7 @@
-const googleApiKey = 'AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0';
-
 import hpr from './modules/helper.js';
 import api from './modules/api.js';
-// import map from './map/map.js';
 import { mapSettings, mapStyles } from './map/mapObj.js';
 import gMap from './map/map.js';
-import helper from './modules/helper.js';
 
 let map;
 let infowindow;
@@ -16,22 +12,25 @@ let scroll;
 
 // get lat and longitude based on current user location
 function geoCall(dist) {
-	api.userLoc().then(res => {
-		const { latitude: lat, longitude: lng } = res.coords;
-		const mapCtr = {
-			lat: lat,
-			lng: lng
-		};
-		$('#markerMap').empty();
-		markerMap(mapCtr);
-		mtbAndBreweryAPICalls(dist, mapCtr);
-	});
+	api
+		.userLoc()
+		.then(res => {
+			const { latitude: lat, longitude: lng } = res.coords;
+			const mapCtr = {
+				lat: lat,
+				lng: lng
+			};
+			$('#markerMap').empty();
+			markerMap(mapCtr);
+			mtbAndBreweryAPICalls(dist, mapCtr);
+		})
+		.catch(err => {
+			console.log(err);
+		});
 }
 
 // lat and lon based on zip code or other search parameters - provided by google api
 async function coordinateCall(sParameter, dist) {
-	const queryURL = `https://maps.googleapis.com/maps/api/geocode/json?address=${sParameter}&key=${googleApiKey}`;
-
 	try {
 		const newLoc = await api.coordinateCall(sParameter);
 		mtbAndBreweryAPICalls(dist, newLoc);
@@ -56,13 +55,13 @@ function mtbAndBreweryAPICalls(dist, mapCtr) {
 // pushes desired info from AJAX objects then calls list functions and marker map
 function makeArrays(mtbObject, breweryObject) {
 	// build & combine the two arrays for sending to marker map
-	const mtbInfoArr = helper.buildArrays(mtbObject, null, 'trail');
+	const mtbInfoArr = hpr.buildArrays(mtbObject, null, 'trail');
 
 	const mtbArrayLength = mtbObject.length;
-	const breweryInfoArr = helper.buildArrays(breweryObject, mtbArrayLength, 'brewery');
+	const breweryInfoArr = hpr.buildArrays(breweryObject, mtbArrayLength, 'brewery');
 
-	if (mtbObject[0].name !== 'false') helper.buildAndDisplayList(mtbInfoArr, 'trail');
-	if (breweryObject[0].name !== 'false') helper.buildAndDisplayList(breweryInfoArr, 'brewery');
+	if (mtbObject[0].name !== 'false') hpr.buildAndDisplayList(mtbInfoArr, 'trail');
+	if (breweryObject[0].name !== 'false') hpr.buildAndDisplayList(breweryInfoArr, 'brewery');
 
 	const mapInfoArr = [ ...mtbInfoArr, ...breweryInfoArr ];
 	addMarkers(mapInfoArr);
@@ -104,7 +103,7 @@ function SearchControl(controlDiv, map) {
 	controlText.innerHTML = 'Redo Search';
 	controlUI.appendChild(controlText);
 
-	// Setup the click event listeners: simply set the map to Chicago.
+	// Setup the click event listeners:
 	controlUI.addEventListener('click', function() {
 		const newCtr = map.getCenter();
 		let lat = newCtr.lat();
@@ -117,7 +116,6 @@ function SearchControl(controlDiv, map) {
 			lng: lng
 		};
 		let dist = hpr.distance();
-		// trailCall(dist, newLoc);
 		mtbAndBreweryAPICalls(dist, newLoc);
 	});
 }
@@ -189,8 +187,7 @@ function trailDetails(trailId) {
       src="https://www.mtbproject.com/widget?v=3&map=1&type=trail&id=${trailId}&z=6">
       </iframe>`
 	);
-	$('.trailModal').empty();
-	$('.trailModal').append(trailWidget);
+	$('.trailModal').empty().append(trailWidget);
 	$('#modal1').modal('open');
 }
 
@@ -208,19 +205,15 @@ function breweryDetails(breweryId) {
 	// this function was originally nested because it needed access to variables that were sent to the function breweryDetails - that is no longer the case, but I have left it nested
 	function placeDetails(place, status) {
 		if (status === google.maps.places.PlacesServiceStatus.OK) {
-			const name = place.name;
-			const rating = place.rating;
+			const { name, rating, formatted_address: address, formatted_phone_number: phoneNum, website } = place;
 			const starTotal = 5;
 			const starPercentage = rating / starTotal * 100;
 			const starPercentageRounded = `${Math.round(starPercentage / 10) * 10}%`;
 
 			$('.stars-inner').css('width', starPercentageRounded);
 
-			const address = place.formatted_address;
-			const phoneNum = place.formatted_phone_number;
-			const webSite = place.website;
 			const webLink = $('<a>');
-			webLink.attr({ href: webSite, target: '_blank' });
+			webLink.attr({ href: website, target: '_blank' });
 			webLink.text(name);
 
 			$('#brewNameModal').text(name);
@@ -246,7 +239,7 @@ function breweryDetails(breweryId) {
 					const ratio = height / width;
 					if (ratio < 1.4) {
 						//checks for image size ratio so as to not put too tall images in carosel
-						const cAnchor = $('<a>').addClass('carousel-item').attr({ href: webSite, target: '_blank' });
+						const cAnchor = $('<a>').addClass('carousel-item').attr({ href: website, target: '_blank' });
 
 						const pURL = photo.getUrl();
 						const cImg = $('<img>').attr('src', pURL);
