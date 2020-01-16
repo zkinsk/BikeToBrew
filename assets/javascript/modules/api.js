@@ -1,4 +1,4 @@
-const googleApiKey = 'AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0';
+const googleApiKey = 'AIzaSyDa6UN8aA8o_MA3LcPKoU74P0AZAQE3ybE';
 const mtbProjApiKey = '200235024-32c4fc71813961608e163497918dd634';
 
 export default {

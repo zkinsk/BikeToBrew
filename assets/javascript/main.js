@@ -1,16 +1,7 @@
-<<<<<<< HEAD
-// const googleApiKey = 'AIzaSyAQm54poE1BtQ8oBFLMXbGHh-uz_NZaEH0';
-const googleApiKey = 'AIzaSyDa6UN8aA8o_MA3LcPKoU74P0AZAQE3ybE';
-const mtbProjApiKey = '200235024-32c4fc71813961608e163497918dd634';
-
-import { mapStyles } from './mapObj.js';
-import hpr from './helper.js';
-=======
 import hpr from './modules/helper.js';
 import api from './modules/api.js';
 import { mapSettings, mapStyles } from './map/mapObj.js';
 import gMap from './map/map.js';
->>>>>>> 4a1068c319bbb13c7498463160426091b3be79f7
 
 let map;
 let infowindow;
