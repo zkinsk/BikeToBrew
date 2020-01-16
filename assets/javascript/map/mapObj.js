@@ -335,3 +335,17 @@ export const mapStyles = [
 		]
 	}
 ];
+
+export function mapSettings(mapCtr) {
+	return {
+		zoom: 11,
+		center: mapCtr,
+		zoomControl: true,
+		mapTypeControl: false,
+		scaleControl: false,
+		streetViewControl: false,
+		rotateControl: false,
+		fullscreenControl: true,
+		gestureHandling: 'greedy'
+	};
+}
